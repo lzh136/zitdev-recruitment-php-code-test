@@ -10,7 +10,7 @@ use App\Service\ProductHandler;
  */
 class ProductHandlerTest extends TestCase
 {
-    private $products = [
+    public $products = [
         [
             'id' => 1,
             'name' => 'Coca-cola',
@@ -55,7 +55,10 @@ class ProductHandlerTest extends TestCase
         ],
     ];
 
-    public function testGetTotalPrice()
+    /**
+     *商品总金额测试
+     */
+    public function testGetTotalPrice():void
     {
         $totalPrice = 0;
         foreach ($this->products as $product) {
@@ -64,5 +67,88 @@ class ProductHandlerTest extends TestCase
         }
 
         $this->assertEquals(143, $totalPrice);
+    }
+    /**
+     *商品总金额测试2.0
+     */
+    public function testGetTotalPrice_V2():void
+    {
+
+        $this->assertEquals(143, (new ProductHandler)->getTotalPrice($this->products));
+    }
+
+    /**
+     * 商品筛选排序测试
+     */
+    public function testGetProductsByType():void
+    {
+        $this->assertEquals(
+            [
+                [
+                    'id' => 5,
+                    'name' => 'New York Cheese Cake',
+                    'type' => 'Dessert',
+                    'price' => 40,
+                    'create_at' => '2021-04-19 14:38:00',
+                ],
+                [
+                    'id' => 4,
+                    'name' => 'Cup cake',
+                    'type' => 'Dessert',
+                    'price' => 35,
+                    'create_at' => '2021-04-18 08:45:00',
+                ]
+            ],(new ProductHandler)->getProductsByType($this->products));
+    }
+
+    /**
+     * 商品create_at格式转化测试
+     */
+    public function testchangeTimeFormat()
+    {
+        $this->assertEquals([
+            [
+                'id' => 1,
+                'name' => 'Coca-cola',
+                'type' => 'Drinks',
+                'price' => 10,
+                'create_at' => '1618884000',
+            ],
+            [
+                'id' => 2,
+                'name' => 'Persi',
+                'type' => 'Drinks',
+                'price' => 5,
+                'create_at' => '1618966800',
+            ],
+            [
+                'id' => 3,
+                'name' => 'Ham Sandwich',
+                'type' => 'Sandwich',
+                'price' => 45,
+                'create_at' => '1618916400',
+            ],
+            [
+                'id' => 4,
+                'name' => 'Cup cake',
+                'type' => 'Dessert',
+                'price' => 35,
+                'create_at' => '1618706700',
+            ],
+            [
+                'id' => 5,
+                'name' => 'New York Cheese Cake',
+                'type' => 'Dessert',
+                'price' => 40,
+                'create_at' => '1618814280',
+            ],
+            [
+                'id' => 6,
+                'name' => 'Lemon Tea',
+                'type' => 'Drinks',
+                'price' => 8,
+                'create_at' => '1617535380',
+            ],
+        ], (new ProductHandler)->changeTimeFormat($this->products));
     }
 }
